@@ -28,6 +28,7 @@ const _createBot = async (_store, _bot) => {
 	const _createTimeout = () => setTimeout(async () => {
         try {
         	++_store.count
+        	console.log(`Start Crawler for bot_id ${_store._id} - count: ${_store.count}`)
             await crawler({code, session, quiz_id: quiz._id})
             
             if(_store.count >= times) {
@@ -44,7 +45,7 @@ const _createBot = async (_store, _bot) => {
             _store.status = 'error'
         }
 		
-
+        console.log(`Complete Crawler for bot_id ${_store._id} - count: ${_store.count}`)
 	}, DEFAULT_CRAWLER_TIME_OUT)
 
 	// return start, stop bot function

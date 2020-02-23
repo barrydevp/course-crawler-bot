@@ -5,7 +5,8 @@ const {isUndef} = require('../helpers/is')
 const _delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const MAX_RETRIES = parseInt(process.env.MAX_RETRIES || 30)
-const DEFAULT_BUFF_SEC = parseInt(process.env.DEFAULT_BUFF_SEC || 180)
+const DEFAULT_BUFF_SEC = parseInt(process.env.DEFAULT_BUFF_SEC || 150)
+const DEFAULT_BUFF_SEC = parseInt(process.env.DEFAULT_BUFF_SEC_1 || 20)
 
 const checkRequired = (...args) => {
     args.forEach(a => {
@@ -71,7 +72,7 @@ module.exports = async ({code, session, quiz_id}) => {
             if(retries > MAX_RETRIES) return
 
             const buff = retries < 2 ? 2 - retries : 0
-            const ms = 1000 * (buff * DEFAULT_BUFF_SEC + 40 * (1 - (2 * retries + retries * retries) / MAX_RETRIES / MAX_RETRIES))
+            const ms = 1000 * (buff * DEFAULT_BUFF_SEC + DEFAULT_BUFF_SEC_1 * (1 + (-2 * retries * MAX_RETRIES + retries * retries) / MAX_RETRIES / MAX_RETRIES))
 
             await _delay(ms)
 
@@ -134,7 +135,7 @@ module.exports = async ({code, session, quiz_id}) => {
 
         const submitQuiz = async () => {
             await page.$$eval('.submitbtns form button.btn.btn-secondary', (submitBtns) => {
-                submitBtns[1].click && submitBtns[1].click()
+                submitBtns && submitBtns[1] && submitBtns[1].click && submitBtns[1].click()
             })
 
             await page.waitForSelector('.confirmation-buttons input.btn.btn-primary')
