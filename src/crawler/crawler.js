@@ -6,7 +6,7 @@ const _delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const MAX_RETRIES = parseInt(process.env.MAX_RETRIES || 30)
 const DEFAULT_BUFF_SEC = parseInt(process.env.DEFAULT_BUFF_SEC || 150)
-const DEFAULT_BUFF_SEC = parseInt(process.env.DEFAULT_BUFF_SEC_1 || 20)
+const DEFAULT_BUFF_SEC_1 = parseInt(process.env.DEFAULT_BUFF_SEC_1 || 20)
 
 const checkRequired = (...args) => {
     args.forEach(a => {
