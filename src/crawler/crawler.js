@@ -16,7 +16,7 @@ const checkRequired = (...args) => {
 module.exports = async ({code, session, quiz_id}) => {
     checkRequired(code, session, quiz_id)
 
-    const browser = await puppeteer.launch({headless: false})
+    const browser = await puppeteer.launch({headless: process.env.NODE_ENV === 'production', args: ['--no-sandbox']})
 
     try {
         const page = await browser.newPage()
@@ -71,7 +71,7 @@ module.exports = async ({code, session, quiz_id}) => {
             if(retries > MAX_RETRIES) return
 
             const buff = retries < 2 ? 2 - retries : 0
-            const ms = 1000 * (buff * DEFAULT_BUFF_SEC + 40 * (1 - 2 * retries + retries * retries) / MAX_RETRIES / MAX_RETRIES)
+            const ms = 1000 * (buff * DEFAULT_BUFF_SEC + 40 * (1 - (2 * retries + retries * retries) / MAX_RETRIES / MAX_RETRIES))
 
             await _delay(ms)
 
@@ -118,7 +118,7 @@ module.exports = async ({code, session, quiz_id}) => {
             try {
                 await page.$$eval('form#responseform .formulation .answer', (questions) => {
                     const ans = questions.map(e => e.querySelector('input[type=radio]'))
-                    ans.forEach(e => e.click())
+                    ans.forEach(e => e && e.click())
                 })
 
                 await Promise.all([page.waitForNavigation({waitUntil: 'networkidle0'}),
